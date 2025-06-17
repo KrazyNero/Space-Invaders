@@ -5,9 +5,9 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Enemy {
-    int x, y, width = 50, height = 40;
+    int x, y, width = 70, height = 40;
     int dx = 2;
-    int health = 2;
+    int health = 10;
     BufferedImage image;
     Random rand = new Random();
 
@@ -38,9 +38,8 @@ public class Enemy {
             g.fillRect(x, y, width, height);
         }
 
-        // Draw health bar
         g.setColor(Color.GREEN);
-        g.fillRect(x, y - 5, width * health / 2, 5);
+        g.fillRect(x + 10, y - 10, health * 5, 5);
     }
 
     public Rectangle getBounds() {
@@ -53,6 +52,6 @@ public class Enemy {
     }
 
     public boolean shouldShoot() {
-        return rand.nextDouble() < 0.002; // low chance per frame
+        return rand.nextDouble() < 0.002;
     }
 }
