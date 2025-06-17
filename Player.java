@@ -4,8 +4,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Player {
-    int x, y, width = 40, height = 40;
+    int x, y, width = 60, height = 40;
     BufferedImage image;
+    int health = 10;
+
 
     public Player(int x, int y) {
         this.x = x;
@@ -31,5 +33,13 @@ public class Player {
             g.setColor(Color.BLUE);
             g.fillRect(x, y, width, height);
         }
+
+        g.setColor(Color.GREEN);
+        g.fillRect(x + 10, y - 10, health * 5, 5);
+    }
+
+    public boolean isHit() {
+        health--;
+        return health <= 0;
     }
 }
