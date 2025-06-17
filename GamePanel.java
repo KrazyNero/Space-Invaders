@@ -48,7 +48,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (gameOver || win) return;
+        if (gameOver || win) {
+            bullets.clear();
+            enemyBullets.clear();
+            repaint();
+            return;
+        };
 
         if (left) player.move(-5);
         if (right) player.move(5);
@@ -59,13 +64,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        // Move bullets
         bullets.removeIf(b -> {
             b.move();
             return b.y < 0;
         });
 
-        // Move enemies + randomly shoot
         for (Enemy enemy : enemies) {
             enemy.move();
             if (rand.nextDouble() < 0.002) {
@@ -73,7 +76,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        // Move enemy bullets
         Iterator<EnemyBullet> ebIter = enemyBullets.iterator();
         while (ebIter.hasNext()) {
             EnemyBullet eb = ebIter.next();
@@ -85,12 +87,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
             Rectangle playerBounds = new Rectangle(player.x, player.y, player.width, player.height);
             if (playerBounds.intersects(eb.getBounds())) {
-                gameOver = true;
-                timer.stop();
+                player.isHit();
+                ebIter.remove();
+                
+                if (player.health == 0) {
+                    gameOver = true;
+                    timer.stop();
+                }
             }
-        }
+        } 
 
-        // Bullet-enemy collisions
         Iterator<Enemy> eIter = enemies.iterator();
         while (eIter.hasNext()) {
             Enemy enemy = eIter.next();
@@ -177,12 +183,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     gameOver = false;
     win = false;
 
-    String[] colors = {
-        "alien-white.png",
-        "alien-cyan.png",
-        "alien-magenta.png",
-        "alien-yellow.png"
-    };
+    String[] colors = {"alien-white.png", "alien-cyan.png", "alien-magenta.png", "alien-yellow.png"};
 
     for (int row = 0; row < 4; row++) {
         String img = colors[row % colors.length];
@@ -190,7 +191,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             enemies.add(new Enemy(80 + col * 100, 50 + row * 60, img));
         }
     }
-
     timer.start();
 }
 }
